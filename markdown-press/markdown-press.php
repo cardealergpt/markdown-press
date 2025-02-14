@@ -3,8 +3,8 @@
  * Plugin Name: Markdown Press
  * Plugin URI: https://example.com/markdown-press
  * Description: Export WordPress posts and pages as Markdown files individually or in bulk
- * Version: 1.0.0
- * Author: Your Name
+ * Version: 1.0.1
+ * Author: CarDealerGPT
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: markdown-press

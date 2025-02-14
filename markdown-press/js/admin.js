@@ -44,18 +44,15 @@ jQuery(document).ready(function($) {
     });
 
     function handleExport(data) {
-        // Create result container if it doesn't exist
-        var $result = $('#markdown-press-export-result');
-        if (!$result.length) {
-            $result = $('<div id="markdown-press-export-result" class="notice is-dismissible"></div>');
-            $('.wrap h1').after($result);
-        }
+        // Remove any existing notices first
+        $('.markdown-press-notice').remove();
         
-        // Clear previous results
-        $result.empty().removeClass('notice-success notice-error notice-info');
+        // Create result container if it doesn't exist
+        var $result = $('<div id="markdown-press-export-result" class="markdown-press-notice notice is-dismissible"></div>');
+        $('.wrap h1').after($result);
         
         // Show loading message
-        $result.addClass('notice notice-info').html('<p>' + markdownPressAdmin.i18n.exporting + '</p>').show();
+        $result.addClass('notice-info').html('<p>' + markdownPressAdmin.i18n.exporting + '</p>').show();
 
         // Add nonce to data
         data.action = 'markdown_press_export';
@@ -84,6 +81,23 @@ jQuery(document).ready(function($) {
                 } else {
                     showError(response.data.message || markdownPressAdmin.i18n.exportFailed);
                 }
+                
+                // Initialize WordPress dismissible notices
+                $('.notice.is-dismissible').each(function() {
+                    var $el = $(this);
+                    var $button = $('<button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button>');
+                    
+                    $button.on('click.wp-dismiss-notice', function(event) {
+                        event.preventDefault();
+                        $el.fadeTo(100, 0, function() {
+                            $el.slideUp(100, function() {
+                                $el.remove();
+                            });
+                        });
+                    });
+                    
+                    $el.append($button);
+                });
             },
             error: function(xhr, status, error) {
                 var message = xhr.responseJSON && xhr.responseJSON.data ? 
@@ -97,7 +111,7 @@ jQuery(document).ready(function($) {
     function showSuccess(message) {
         var $result = $('#markdown-press-export-result');
         $result.removeClass('notice-info notice-error')
-               .addClass('notice notice-success')
+               .addClass('notice-success')
                .html('<p>' + message + '</p>')
                .show();
     }
@@ -105,7 +119,7 @@ jQuery(document).ready(function($) {
     function showError(message) {
         var $result = $('#markdown-press-export-result');
         $result.removeClass('notice-info notice-success')
-               .addClass('notice notice-error')
+               .addClass('notice-error')
                .html('<p>' + message + '</p>')
                .show();
     }
